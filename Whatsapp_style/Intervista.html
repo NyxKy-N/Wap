@@ -1,0 +1,589 @@
+
+
+
+<!--! Scaricare File e Aprire con il Browser -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intervista Impossibile</title>
+    <style>
+        :root {
+            --bg-color: #e0e0e0;
+            --container-bg: white;
+            --contacts-bg: #f0f0f0;
+            --contacts-header-bg: #f0f0f0;
+            --contacts-border: #dbdbdb;
+            --contact-bg: white;
+            --contact-hover: #f5f5f5;
+            --contact-active: #ebebeb;
+            --text-primary: #333;
+            --text-secondary: #667781;
+            --message-sent-bg: #d9fdd3;
+            --message-received-bg: white;
+            --message-text: #262626;
+            --status-color: #25d366;
+            --date-bg: #f0f0f0;
+            --header-bg: #f0f0f0;
+            --shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode {
+            --bg-color: #0c1317;
+            --container-bg: #111b21;
+            --contacts-bg: #202c33;
+            --contacts-header-bg: #202c33;
+            --contacts-border: #2a3942;
+            --contact-bg: #111b21;
+            --contact-hover: #2a3942;
+            --contact-active: #2a3942;
+            --text-primary: #e9edef;
+            --text-secondary: #8696a0;
+            --message-sent-bg: #005c4b;
+            --message-received-bg: #202c33;
+            --message-text: #e9edef;
+            --status-color: #00a884;
+            --date-bg: #182229;
+            --header-bg: #202c33;
+            --shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-color);
+            padding: 20px;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 700px;
+            background: var(--container-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .contacts {
+            width: 30%;
+            background: var(--contacts-bg);
+            border-right: 1px solid var(--contacts-border);
+            overflow-y: auto;
+        }
+        
+        .contacts-header {
+            padding: 20px 16px;
+            background: var(--contacts-header-bg);
+            border-bottom: 1px solid var(--contacts-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .contacts-header h2 {
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+        
+        .contact {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--contacts-border);
+            cursor: pointer;
+            transition: background 0.2s;
+            background: var(--contact-bg);
+        }
+        
+        .contact:hover {
+            background: var(--contact-hover);
+        }
+        
+        .contact.active {
+            background: var(--contact-active);
+        }
+        
+        .contact-avatar {
+            width: 49px;
+            height: 49px;
+            border-radius: 50%;
+            background: var(--status-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .contact-info h3 {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+        
+        .contact-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 10px 16px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--contacts-border);
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--status-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        
+        .chat-header-info {
+            flex: 1;
+        }
+        
+        .chat-header-info h2 {
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .chat-header-info p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: rgb(201, 14, 14);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f8f9fa' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-mode .messages {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23111b21' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .message {
+            max-width: 65%;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+        }
+        
+        .message-bubble {
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+            line-height: 1.4;
+            font-size: 14.2px;
+        }
+        
+        .received .message-bubble {
+            background: var(--message-received-bg);
+            color: var(--message-text);
+            border-top-left-radius: 0;
+        }
+        
+        .sent .message-bubble {
+            background: var(--message-sent-bg);
+            color: var(--message-text);
+            border-top-right-radius: 0;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            align-self: flex-end;
+            padding: 0 5px;
+        }
+        
+        .sent .message-time {
+            align-self: flex-end;
+        }
+        
+        .received .message-time {
+            align-self: flex-start;
+        }
+        
+        .chat-date {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            margin: 20px 0;
+            position: relative;
+            background: var(--date-bg);
+            padding: 5px 12px;
+            border-radius: 7.5px;
+            align-self: center;
+            max-width: 40%;
+        }
+        
+        @media (max-width: 768px) {
+            .contacts {
+                width: 80px;
+            }
+            
+            .contact-info {
+                display: none;
+            }
+            
+            .contact {
+                justify-content: center;
+            }
+            
+            .contact-avatar {
+                margin-right: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .contacts {
+                display: none;
+            }
+            
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="contacts">
+            <div class="contacts-header">
+                <h2>Chat</h2>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </div>
+            <div class="contact active">
+                <div class="contact-avatar">S</div>
+                <div class="contact-info">
+                    <h3>Smith</h3>
+                    <p>Smith: Preservate la concorre </p>
+                </div>
+            </div>
+            <div class="contact">
+                <div class="contact-avatar">M</div>
+                <div class="contact-info">
+                    <h3>Rousseau</h3>
+                    <p>Grazie per l'intervista!</p>
+                </div>
+            </div>
+            <div class="contact">
+                <div class="contact-avatar">G</div>
+                <div class="contact-info">
+                    <h3>Montesquieu</h3>
+                    <p>Montesquieu: Hai visto l'ultimo articolo?</p>
+                </div>
+            </div>
+            <div class="contact">
+                <div class="contact-avatar">G</div>
+                <div class="contact-info">
+                    <h3>Voltaire</h3>
+                    <p>Voltaire: Bella Fra</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-header-avatar">S</div>
+                <div class="chat-header-info">
+                    <h2>Smith</h2>
+                    <p><span class="status-dot"></span>Offline</p>
+                </div>
+            </div>
+            
+            <div class="messages">
+                <div class="chat-date">11/16/1775</div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Professor Smith, grazie per avere accettato — in questa intervista impossibile — di parlare con uno studente del XXI secolo. 
+                        Lei ha scritto che «non è dalla benevolenza del macellaio, del birraio o del fornaio che ci aspettiamo la nostra cena,
+                        ma dalla loro considerazione del proprio interesse». In un'epoca di consumismo, mega-imprese e grandi disuguaglianze, non rischia di aver legittimato l'egoismo più sfrenato?
+                    </div>
+                    <div class="message-time">10:16</div>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-bubble">
+                        Signor giovane, quel passo delle mie pagine mira a mostrare una verità pratica: nelle società civili gli uomini si scambiano, 
+                        e assai frequentemente agiscono per ciò che reputano vantaggioso per sé. 
+                        Non intendo affermare che il mondo stia bene se ciascuno non prova affetto o rispetto per gli altri; 
+                        dico che la cooperazione sociale si fonda spesso sulla capacità di persuadere gli altri che uno può offrire loro vantaggi — 
+                        e questo è l’interesse personale. Il termine "egoismo" porta con sé una condanna morale che non sempre è pertinente: 
+                        perseguire il proprio interesse può, in un contesto regolato dalla concorrenza e dalla giustizia, favorire anche il pubblico vantaggio. 
+                        Ma questo non significa che ogni passo motivato dal profitto sia legittimo: l'animo umano ha spot di virtù, e la legge e la moralità ne dovrebbero guidare gli eccessi.
+                    </div>
+                    <div class="message-time">10:17</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Quindi lei distingue interesse personale ed egoismo?
+                    </div>
+                    <div class="message-time">10:18</div>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-bubble">
+                        Esattamente. L'interesse è spesso neutro e strumentale; l'egoismo è una disposizione di cuore. 
+                        Inoltre, nella mia riflessione morale (non qui, ma nei miei discorsi sulla simpatia), 
+                        sottolineo che gli uomini giudicano attraverso il sentimento reciproco: 
+                        esiste un limite morale interno che frena l'azione senza riguardo per gli altri. 
+                        Un’economia sana ha dunque bisogno sia di incentivi materiali sia di norme morali e istituzionali che impediscano abusi.
+                    </div>
+                    <div class="message-time">10:20</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Lei ha usato la metafora della "mano invisibile". Credeva davvero che chi cerca il proprio vantaggio produca sempre un bene collettivo?
+                    </div>
+                    <div class="message-time">10:21</div>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-bubble">
+                        Usai quella metafora per indicare un fatto fenomenico: quando il commercio è libero e la concorrenza vigile, 
+                        l'interesse individuale tende a promuovere la produzione di beni e servizi richiesti, migliorando prosperità e varietà. 
+                        Ma non ho mai voluto proclamare che ciò avviene automaticamente in ogni circostanza. 
+                        Perché la "mano" agisca favorevolmente occorrono condizioni: concorrenza effettiva, regole giuste, trasparenza, libertà dall’esenzione di privilegi. 
+                        Dove mancano tali condizioni, il perseguimento del proprio vantaggio può condurre alla rendita, all’oligopolio, e a conseguenze sociali deleterie.
+                    </div>
+                    <div class="message-time">10:22</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Lei parla spesso di "ricchezza delle nazioni". Ma che cos'è per lei la felicità di un cittadino? È soltanto benessere materiale?
+                    </div>
+                    <div class="message-time">10:23</div>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-bubble">
+                        La felicità non è una sola cosa. La ricchezza materiale aiuta a soddisfare bisogni e a creare opportunità — 
+                        è condizione necessaria per molte comodità della vita. Ma nella Teoria dei Sentimenti Morali ho mostrato che 
+                        compaiono altri elementi: il giudizio del prossimo, la fama, la partecipazione morale, la simpatia. Un uomo 
+                        che ha abbondanza ma manca di relazioni oneste, di rispetto, o è vittima di lavoro monotono e degradante, non 
+                        è pienamente felice. Inoltre la divisione del lavoro, pur aumentando la produttività, può rendere l’opera ripetitiva 
+                        e impoverire la vita del lavoratore se non accompagnata da istruzione e istituzioni che rendano il lavoro umano.
+                    </div>
+                    <div class="message-time">10:25</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Quindi lei riconosce un lato oscuro della divisione del lavoro?
+                    </div>
+                    <div class="message-time">10:26</div>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-bubble">
+                        Sì. Ho scritto che la divisione del lavoro è la principale fonte dell’aumento delle capacità produttive — 
+                        la sua utilità è indubbia — ma osservai anche che portare un operaio a ripetere un solo gesto può far logorare 
+                        la mente e la vita. Per questo, oltre a favorire l'efficienza, una società saggia presta attenzione all’istruzione 
+                        e alla varietà di occupazioni che preservino la dignità umana.
+                    </div>
+                    <div class="message-time">10:28</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Oggi si discute molto fra libero mercato e Stato. Lei, da liberista, vorrebbe uno Stato completamente assente?
+                    </div>
+                    <div class="message-time">10:30</div>
+                </div>
+
+                <div class="message received">
+                    <div class="message-bubble">
+                        Non confondete libertà commerciale con negligente abbandono dei pubblici doveri. Io ho indicato che lo Stato deve provvedere 
+                        a tre ordini principali: la difesa della nazione, l'amministrazione della giustizia e la promozione di opere pubbliche che 
+                        il privato non intraprenderebbe (ad esempio certe strade o infrastrutture utili a tutti). Inoltre, lo Stato deve difendere 
+                        la concorrenza impedendo privilegi e monopoli. Non immaginavo che il governo non debba avere alcun ruolo; immaginavo invece 
+                        che l'intervento fosse mirato e limitato alle funzioni che migliorano il funzionamento complessivo del mercato e della società.
+                    </div>
+                    <div class="message-time">10:32</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        E in presenza di multinazionali, oligopoli e grande concentrazione di potere economico, che cosa suggerirebbe?
+                    </div>
+                    <div class="message-time">10:33</div>
+                </div>
+
+                <div class="message received">
+                    <div class="message-bubble">
+                        Se una impresa o un gruppo d'imprese esercita potere tale da soffocare la concorrenza, ottiene rendite e influenza 
+                        legislativa, essa distorce il corretto funzionamento dell'economia. Tali fenomeni devono essere mitigati: la legge 
+                        deve prevenire franchigie ingiuste, facilitare l’ingresso dei concorrenti e proteggere i consumatori. Non condanno 
+                        la grande impresa in sé — le economie di scala e l'organizzazione possono produrre notevole utilità — ma condanno 
+                        l'uso del potere per ottenere privilegi a detrimento della società.
+                    </div>
+                    <div class="message-time">10:35</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Nel suo pensiero, come si forma la domanda pubblica di giustizia e di regole? La morale privata è sufficiente o servono istituzioni?
+                    </div>
+                    <div class="message-time">10:36</div>
+                </div>
+
+                <div class="message received">
+                    <div class="message-bubble">
+                        La moralità privata (la simpatia e il giudizio del "spettatore imparziale") sorregge molto del vivere comune: rispetto, reputazione, 
+                        fiducia. Tuttavia, quando queste non bastano — perché gli interessi sono troppo grandi o perché gli effetti sono diffusi e nascosti — 
+                        è necessaria l'azione pubblica: tribunali, regole sui contratti, pubbliche infrastrutture. Le istituzioni e la legge sono il complemento 
+                        necessario dell’etica individuale per rendere stabili e sicure le relazioni economiche.
+                    </div>
+                    <div class="message-time">10:38</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Tornando alla felicità collettiva: pensa che la libertà economica porti automaticamente alla felicità delle nazioni?
+                    </div>
+                    <div class="message-time">10:39</div>
+                </div>
+
+                <div class="message received">
+                    <div class="message-bubble">
+                        No. La libertà economica, praticata correttamente — cioè in un ambiente di concorrenza e regole — è strumento potente per aumentare il 
+                        benessere materiale. Ma la felicità collettiva richiede anche giustizia, istruzione, salute, e spazi per la vida morale e civile. Una 
+                        nazione ricca di merci ma priva di virtù civica o di istituzioni giuste non avrà cittadini felici.
+                    </div>
+                    <div class="message-time">10:41</div>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-bubble">
+                        Concludo con una domanda pratica: se potesse rivolgersi ai legislatori moderni, quale sarebbe il suo ammonimento principale?
+                    </div>
+                    <div class="message-time">10:42</div>
+                </div>
+
+                <div class="message received">
+                    <div class="message-bubble">
+                        Preservate la concorrenza; non concedete privilegi a corporazioni o interessi particolari; non confuse il governo con il mercato ma non abbandonate 
+                        i pubblici doveri; promuovete l’istruzione che rende gli uomini capaci non solo di svolgere un lavoro, ma di comprendere la propria condizione e 
+                        partecipare alla vida civile. E infine, ricordate che la ricchezza non è il solo bene: la moralità e la qualità della vida devono essere considerate 
+                        nel governo delle nazioni.
+                    </div>
+                    <div class="message-time">10:44</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                }
+            });
+            
+            const contacts = document.querySelectorAll('.contact');
+            
+            contacts.forEach(contact => {
+                contact.addEventListener('click', function() {
+                    contacts.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
